@@ -1,48 +1,38 @@
 # Love Note
 
-**Does Cory Still Love Me?** — a tiny, no-build browser toy.
+**Does Cory Still Love Me?** — a tiny browser toy, hosted on GitHub Pages.
 
-🔗 **Live site:** https://camthebarman.github.io/Love-Note/ *(once Pages is switched on — see below)*
+🔗 **Live:** https://camthebarman.github.io/Love-Note/
 
 ## How it works
 
 1. Click **Does Cory Still Love Me?** and the answer pops up in big, bright letters.
 2. The button becomes **Are you sure?** — click it for a brand new way of saying yes.
 3. It keeps escalating: *super sure*, *super duper sure*, *super duper mega sure*, all the
-   way to *Are you the surest human who has ever been sure?* — 12 escalations, 13 different
-   yeses, each with its own color scheme and a shower of hearts.
+   way to *Are you the surest human who has ever been sure?* — 12 escalations and 13
+   different yeses, each with its own color scheme, a rising certainty meter, and a shower
+   of hearts.
 4. After the last one, certainty maxes out and you can start over.
 
-## Publishing to GitHub Pages
+## Hosting
 
-Nothing to click. `.github/workflows/deploy-pages.yml` publishes the repo root on every
-push to `main`, and its `configure-pages` step runs with `enablement: true`, so it switches
-Pages on by itself the first time it runs. You can also trigger it by hand from the
-**Actions** tab (**Deploy to GitHub Pages → Run workflow**).
+Pages serves this repo's `main` branch from the root, so **pushing to `main` publishes the
+site**. There is no build step and no deploy workflow — the whole page is one static file.
 
-<details>
-<summary>Alternative: no workflow at all</summary>
-
-Because this is static files at the repo root, you can skip Actions entirely and set
-**Settings → Pages → Source: _Deploy from a branch_ → `main` / `(root)`**. The `.nojekyll`
-file keeps Jekyll from touching the files. The workflow just gives you a deploy log and a
-deployment history instead.
-</details>
+`.nojekyll` tells Pages to serve the files as-is instead of running them through Jekyll.
 
 ## Running it locally
 
-Open `index.html` directly in a browser — no server, no install, no dependencies.
+Open `index.html` in a browser. That is the entire setup — no server, no install, no
+dependencies.
 
 ## Files
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Markup and social/share metadata |
-| `styles.css` | Colors, fonts, animations |
-| `script.js` | The escalating question ladder and answers |
-| `preview.png` | Link-preview image for shares |
-| `.nojekyll` | Tells Pages to serve files as-is |
-| `.github/workflows/deploy-pages.yml` | Builds and deploys the site |
+| `index.html` | The whole app: markup, styles, and script in one self-contained file |
+| `preview.png` | Link-preview image used by the Open Graph / Twitter card tags |
+| `.nojekyll` | Tells Pages to skip Jekyll processing |
 
-Web fonts load from Google Fonts when online; offline it falls back to system fonts and
-still looks fine.
+The display fonts come from Google Fonts; if they are unavailable the page falls back to
+system fonts and still works.

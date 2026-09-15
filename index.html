@@ -12,28 +12,340 @@
 <meta property="og:description" content="A very scientific love detector. Ask once, then keep asking. The answer never changes." />
 <meta property="og:image" content="https://camthebarman.github.io/Love-Note/preview.png" />
 <meta name="twitter:card" content="summary_large_image" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Lilita+One&family=Pacifico&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css" />
+
+<style>
+  :root {
+    --bg-a: #ff8fd4;
+    --bg-b: #7a5cff;
+    --answer: #fffb00;
+    --answer-shadow: #ff2d95;
+    --ink: #2a1040;
+    --display: "Lilita One", "Fredoka", Impact, system-ui, sans-serif;
+    --script: "Pacifico", "Fredoka", cursive;
+    --body: "Fredoka", "Trebuchet MS", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px 16px;
+    font-family: var(--body);
+    color: var(--ink);
+    text-align: center;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, var(--bg-a), var(--bg-b));
+    background-size: 200% 200%;
+    animation: drift 12s ease-in-out infinite;
+  }
+
+  @keyframes drift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .card {
+    position: relative;
+    z-index: 2;
+    width: min(820px, 100%);
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 28px;
+    padding: 36px 26px 28px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(6px);
+  }
+
+  h1 {
+    font-family: var(--script);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    margin: 0 0 14px;
+    color: #d6006e;
+    text-shadow: 2px 2px 0 #fff;
+  }
+
+  .answer {
+    font-family: var(--display);
+    font-size: clamp(2.1rem, 10vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 6px 0;
+    min-height: 1.1em;
+    color: var(--answer);
+    text-shadow: 3px 3px 0 var(--answer-shadow), 6px 6px 0 rgba(0, 0, 0, 0.18);
+    word-break: break-word;
+  }
+
+  .answer.pop { animation: pop 0.55s cubic-bezier(0.22, 1.4, 0.4, 1); }
+
+  @keyframes pop {
+    0% { transform: scale(0.4) rotate(-8deg); opacity: 0; }
+    60% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
+  .note {
+    font-size: clamp(0.95rem, 2.6vw, 1.2rem);
+    margin: 0 0 22px;
+    min-height: 1.4em;
+    color: #4a1c63;
+  }
+
+  button {
+    font-family: var(--body);
+    cursor: pointer;
+    border: none;
+  }
+
+  .ask {
+    font-weight: 700;
+    font-size: clamp(1rem, 3.3vw, 1.45rem);
+    line-height: 1.25;
+    color: #fff;
+    border-radius: 999px;
+    padding: 18px 32px;
+    max-width: 100%;
+    background: linear-gradient(135deg, #ff2d95, #ff9a3c);
+    box-shadow: 0 10px 0 rgba(0, 0, 0, 0.18), 0 16px 30px rgba(0, 0, 0, 0.22);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+
+  .ask:hover { transform: translateY(-3px) scale(1.03); }
+  .ask:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18); }
+  .ask:focus-visible { outline: 4px solid var(--ink); outline-offset: 4px; }
+  .ask.wiggle { animation: wiggle 0.5s ease; }
+
+  @keyframes wiggle {
+    0%, 100% { rotate: 0deg; }
+    25% { rotate: -4deg; }
+    75% { rotate: 4deg; }
+  }
+
+  .meter {
+    width: min(360px, 100%);
+    height: 10px;
+    margin: 22px auto 8px;
+    border-radius: 999px;
+    background: #ffd9ee;
+    overflow: hidden;
+  }
+
+  .meter > i {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff2d95, #ff9a3c, #fffb00);
+    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .level {
+    margin: 0;
+    font-size: 0.82rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6b3a86;
+    min-height: 1.2em;
+  }
+
+  .reset {
+    margin-top: 14px;
+    font-size: 1rem;
+    color: #6b3a86;
+    background: #fff;
+    border: 2px solid #ffb3de;
+    border-radius: 999px;
+    padding: 10px 22px;
+    transition: transform 0.12s ease, background 0.2s ease;
+  }
+
+  .reset:hover { transform: translateY(-2px); background: #ffe9f5; }
+  .reset[hidden] { display: none; }
+
+  .hearts {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .heart {
+    position: absolute;
+    bottom: -60px;
+    animation: rise linear forwards;
+    will-change: transform, opacity;
+  }
+
+  @keyframes rise {
+    0% { transform: translateY(0) rotate(0) scale(0.7); opacity: 1; }
+    100% { transform: translateY(-110vh) rotate(var(--spin, 180deg)) scale(1.4); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body { animation: none; }
+    .answer.pop, .ask.wiggle { animation: none; }
+    .heart { display: none; }
+  }
+</style>
 </head>
+
 <body>
   <div class="hearts" id="hearts" aria-hidden="true"></div>
 
-  <main class="stage">
-    <h1 class="title">Does Cory Still Love Me?</h1>
+  <main class="card">
+    <h1>Does Cory Still Love Me?</h1>
 
     <p class="answer" id="answer" role="status" aria-live="polite"></p>
+    <p class="note" id="note"></p>
 
-    <p class="subline" id="subline"></p>
+    <button class="ask" id="ask" type="button">Does Cory Still Love Me?</button>
 
-    <button class="ask-btn" id="askBtn" type="button">Does Cory Still Love Me?</button>
+    <div class="meter" aria-hidden="true"><i id="fill"></i></div>
+    <p class="level" id="level" aria-live="polite"></p>
 
-    <p class="counter" id="counter" aria-live="polite"></p>
-
-    <button class="reset-btn" id="resetBtn" type="button" hidden>Ask all over again 💌</button>
+    <button class="reset" id="reset" type="button" hidden>Ask all over again 💌</button>
   </main>
 
-  <script src="script.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var FIRST_QUESTION = "Does Cory Still Love Me?";
+
+  /* The 12 escalating "are you sure" prompts. */
+  var SURES = [
+    "Are you sure?",
+    "Are you super sure?",
+    "Are you super duper sure?",
+    "Are you super duper mega sure?",
+    "Are you super duper mega ultra sure?",
+    "Are you super duper mega ultra extra sure?",
+    "Are you super duper mega ultra extra pinky-promise sure?",
+    "Are you super duper mega ultra extra pinky-promise cross-your-heart sure?",
+    "Are you sure sure sure sure sure?",
+    "Are you sure to the power of a million sures?",
+    "Are you so sure that the sures ran out of room?",
+    "Are you the surest human who has ever been sure?"
+  ];
+
+  /* 13 answers: one for the first ask, plus one per "are you sure" click. */
+  var STEPS = [
+    { answer: "YES!", note: "The machine did not even have to think about it.", colors: ["#fffb00", "#ff2d95", "#ff8fd4", "#7a5cff"] },
+    { answer: "YEP. STILL YES.", note: "Checked twice. Same result.", colors: ["#00ffe1", "#00337a", "#5ee7ff", "#1d4dff"] },
+    { answer: "ABSOLUTELY!", note: "Now with 40% more exclamation.", colors: ["#fff200", "#ff5400", "#ffb347", "#ff2d6f"] },
+    { answer: "100% CONFIRMED YES", note: "Independently verified by three separate hearts.", colors: ["#b6ff00", "#0b6b00", "#9dffb0", "#00b3a4"] },
+    { answer: "OH HECK YES", note: "The readings are going off the charts.", colors: ["#ff9df5", "#5d0080", "#ffb3f0", "#8a2be2"] },
+    { answer: "YES, YES, A THOUSAND TIMES YES", note: "We are running out of ways to say it.", colors: ["#ffd6a5", "#c1121f", "#ffb4a2", "#e5383b"] },
+    { answer: "AFFIRMATIVE. LOVE DETECTED.", note: "Official readout from the Love Department.", colors: ["#7dffaf", "#004b23", "#aaffc3", "#2d6a4f"] },
+    { answer: "WITHOUT A SINGLE DOUBT", note: "Not one. We looked everywhere.", colors: ["#fffb00", "#7209b7", "#c77dff", "#3a0ca3"] },
+    { answer: "YESSSSSSSSSS", note: "The S key got stuck. It is fine. It is accurate.", colors: ["#ff4d6d", "#2b0a3d", "#ffccd5", "#ff4d6d"] },
+    { answer: "SÍ · OUI · JA · HAI · YES", note: "Confirmed in five languages, just to be thorough.", colors: ["#4cc9f0", "#03045e", "#90e0ef", "#0077b6"] },
+    { answer: "YES TO THE MOON AND BACK", note: "Round trip. Twice. With snacks.", colors: ["#f8f9fa", "#22223b", "#4a4e69", "#9a8c98"] },
+    { answer: "INFINITE, UNSTOPPABLE YES", note: "The scale broke. We are just estimating now.", colors: ["#ffea00", "#d00000", "#ff9e00", "#d00000"] },
+    { answer: "YES. FOREVER. OBVIOUSLY. 💖", note: "You asked 13 times. The answer never once flinched.", colors: ["#ffe600", "#ff006e", "#ff8fd4", "#ff006e"] }
+  ];
+
+  var HEARTS = ["💖", "💕", "💗", "❤️", "💘", "💞", "🥰", "✨"];
+
+  var askBtn = document.getElementById("ask");
+  var resetBtn = document.getElementById("reset");
+  var answerEl = document.getElementById("answer");
+  var noteEl = document.getElementById("note");
+  var levelEl = document.getElementById("level");
+  var fillEl = document.getElementById("fill");
+  var heartsEl = document.getElementById("hearts");
+
+  var step = 0;
+
+  askBtn.addEventListener("click", ask);
+  resetBtn.addEventListener("click", reset);
+
+  function ask() {
+    var current = STEPS[step];
+
+    answerEl.textContent = current.answer;
+    noteEl.textContent = current.note;
+    paint(current.colors);
+    replay(answerEl, "pop");
+    replay(askBtn, "wiggle");
+    rainHearts(6 + step * 2);
+
+    step += 1;
+    fillEl.style.width = (step / STEPS.length) * 100 + "%";
+
+    if (step < STEPS.length) {
+      askBtn.textContent = SURES[step - 1];
+      levelEl.textContent = "Certainty level " + step + " of " + STEPS.length;
+    } else {
+      askBtn.hidden = true;
+      levelEl.textContent = "Maximum certainty reached. Case closed. 🔒";
+      resetBtn.hidden = false;
+      resetBtn.focus();
+      rainHearts(40);
+    }
+  }
+
+  function reset() {
+    step = 0;
+    answerEl.textContent = "";
+    noteEl.textContent = "";
+    levelEl.textContent = "";
+    fillEl.style.width = "0%";
+    askBtn.textContent = FIRST_QUESTION;
+    askBtn.hidden = false;
+    resetBtn.hidden = true;
+    paint(["#fffb00", "#ff2d95", "#ff8fd4", "#7a5cff"]);
+    askBtn.focus();
+  }
+
+  function paint(colors) {
+    var root = document.documentElement.style;
+    root.setProperty("--answer", colors[0]);
+    root.setProperty("--answer-shadow", colors[1]);
+    root.setProperty("--bg-a", colors[2]);
+    root.setProperty("--bg-b", colors[3]);
+  }
+
+  /* Restart a CSS animation even when the class is already applied. */
+  function replay(el, name) {
+    el.classList.remove(name);
+    void el.offsetWidth;
+    el.classList.add(name);
+  }
+
+  function rainHearts(count) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    for (var i = 0; i < count; i += 1) {
+      var heart = document.createElement("span");
+      heart.className = "heart";
+      heart.textContent = HEARTS[Math.floor(Math.random() * HEARTS.length)];
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.fontSize = 18 + Math.random() * 34 + "px";
+      heart.style.setProperty("--spin", Math.random() * 720 - 360 + "deg");
+
+      var duration = 2.5 + Math.random() * 2.5;
+      heart.style.animationDuration = duration + "s";
+      heart.style.animationDelay = Math.random() * 0.6 + "s";
+
+      heartsEl.appendChild(heart);
+      setTimeout(remover(heart), (duration + 1) * 1000);
+    }
+  }
+
+  function remover(el) {
+    return function () { el.remove(); };
+  }
+})();
+</script>
 </body>
 </html>
