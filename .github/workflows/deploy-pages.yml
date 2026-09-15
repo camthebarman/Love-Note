@@ -25,7 +25,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # enablement: true turns Pages on via the API if it is not already enabled,
+      # so the site does not need a manual visit to Settings -> Pages.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       # The site is plain static files at the repo root, so ship the repo as-is.
       - uses: actions/upload-pages-artifact@v3

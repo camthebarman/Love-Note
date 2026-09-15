@@ -15,14 +15,10 @@
 
 ## Publishing to GitHub Pages
 
-The deploy is automated by `.github/workflows/deploy-pages.yml`, which publishes the repo
-root on every push to `main`. It needs one **one-time manual setup step**, because a
-workflow cannot enable Pages on its own:
-
-> **Settings → Pages → Build and deployment → Source: _GitHub Actions_**
-
-After that, merge this work into `main` and the workflow publishes automatically. You can
-also trigger it by hand from the **Actions** tab (**Deploy to GitHub Pages → Run workflow**).
+Nothing to click. `.github/workflows/deploy-pages.yml` publishes the repo root on every
+push to `main`, and its `configure-pages` step runs with `enablement: true`, so it switches
+Pages on by itself the first time it runs. You can also trigger it by hand from the
+**Actions** tab (**Deploy to GitHub Pages → Run workflow**).
 
 <details>
 <summary>Alternative: no workflow at all</summary>
