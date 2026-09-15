@@ -8,8 +8,8 @@
 
 1. Click **Does Cory Still Love Me?** and the answer pops up in big, bright letters.
 2. The button becomes **Are you sure?** — click it for a brand new way of saying yes.
-3. It keeps escalating: *super sure*, *super duper sure*, *super duper mega sure*, all the
-   way to *Are you the surest human who has ever been sure?* — 12 escalations and 13
+3. It keeps escalating: *super sure*, *super duper sure*, *peer-reviewed double-blind
+   sure*, all the way to *Are you the final boss of sure?* — 24 escalations and 25
    different yeses, each with its own color scheme, a rising certainty meter, and a shower
    of hearts.
 4. After the last one, certainty maxes out and you can start over.
